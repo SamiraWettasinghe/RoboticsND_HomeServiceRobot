@@ -1,0 +1,7 @@
+# ignore all logs
+*.log
+
+# ignore build directory
+/build/*
+/db/*
+/devel/*
