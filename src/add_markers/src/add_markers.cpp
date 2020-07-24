@@ -1,36 +1,47 @@
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
+#include "pick_objects/DriveLocation.h"
+
+// http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29
+
+// Set up client to request to drive to new location
+ros::ServiceClient client;
+void drive_location(float x, float y, float w)
+{
+  add_markers::DriveLocation srv;
+  srv.request.x_loc = x;
+  srv.request.y_loc = y;
+  srv.request.w_rot = w;
+
+  if (!client.call(srv)) {
+    ROS_ERROR("Failed to call service")
+  }
+}
 
 int main( int argc, char** argv )
 {
+  // Set up cube visualization_marker
   ros::init(argc, argv, "add_markers");
   ros::NodeHandle n;
   ros::Rate r(1);
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
+  client = n.ServiceClient<add_markers::DriveLocation>("/add_markers/new_location");
 
-  // Set our initial shape type to be a cube
   uint32_t shape = visualization_msgs::Marker::CUBE;
 
   while (ros::ok())
   {
     visualization_msgs::Marker marker;
-    // Set the frame ID and timestamp.  See the TF tutorials for information on these.
     marker.header.frame_id = "map";
     marker.header.stamp = ros::Time::now();
 
-    // Set the namespace and id for this marker.  This serves to create a unique ID
-    // Any marker sent with the same namespace and id will overwrite the old one
     marker.ns = "add_markers";
     marker.id = 0;
 
-    // Set the marker type to CUBE.
-    shape = visualization_msgs::Marker::CUBE;
     marker.type = shape;
 
-    // Set the marker action.  Options are ADD, DELETE, and new in ROS Indigo: 3 (DELETEALL)
     marker.action = visualization_msgs::Marker::ADD;
 
-    // Set the pose of the marker.  This is a full 6DOF pose relative to the frame/time specified in the header
     marker.pose.position.x = -6.6;
     marker.pose.position.y = 2.0;
     marker.pose.position.z = 0;
@@ -39,12 +50,10 @@ int main( int argc, char** argv )
     marker.pose.orientation.z = 0.0;
     marker.pose.orientation.w = 1.0;
 
-    // Set the scale of the marker -- 1x1x1 here means 1m on a side
     marker.scale.x = 0.25;
     marker.scale.y = 0.25;
     marker.scale.z = 0.25;
 
-    // Set the color -- be sure to set alpha to something non-zero!
     marker.color.r = 0.0f;
     marker.color.g = 0.0f;
     marker.color.b = 1.0f;
@@ -52,7 +61,6 @@ int main( int argc, char** argv )
 
     marker.lifetime = ros::Duration();
 
-    // Publish the marker
     while (marker_pub.getNumSubscribers() < 1)
     {
       if (!ros::ok())
@@ -62,19 +70,22 @@ int main( int argc, char** argv )
       ROS_WARN_ONCE("Please create a subscriber to the marker");
       sleep(1);
     }
-    marker_pub.publish(marker);
 
-    ros::Duration(5.0).sleep();
+    drive_location(-6.6, 2.0, 1.571);
+    marker_pub.publish(marker);
+    ros::spinOnce();
+
     marker.action = visualization_msgs::Marker::DELETE;
 	  marker_pub.publish(marker);
     ROS_INFO("Marker deleted");
 
-    ros::Duration(5.0).sleep();
+    ros::Duration(1.0).sleep();
     marker.pose.position.x = -0.8;
     marker.pose.position.y = -5;
     marker.action = visualization_msgs::Marker::ADD;
     ROS_INFO("Publishing drop off marker");
     marker_pub.publish(marker);
+    drive_location(-0.8, -5, 1.571);
 
     ros::Duration(5.0).sleep();
     return 0;
