@@ -6,12 +6,13 @@
 
 // Set up client to request to drive to new location
 ros::ServiceClient client;
-void drive_location(float x, float y, float w)
+void drive_location(float x, float y, float w, bool first)
 {
   add_markers::DriveLocation srv;
   srv.request.x_loc = x;
   srv.request.y_loc = y;
   srv.request.w_rot = w;
+  srv.request.first = first;
 
   if (!client.call(srv)) {
     ROS_ERROR("Failed to call service")
@@ -71,7 +72,7 @@ int main( int argc, char** argv )
       sleep(1);
     }
 
-    drive_location(-6.6, 2.0, 1.571);
+    drive_location(-6.6, 2.0, 1.571, true);
     marker_pub.publish(marker);
     ros::spinOnce();
 
@@ -85,7 +86,7 @@ int main( int argc, char** argv )
     marker.action = visualization_msgs::Marker::ADD;
     ROS_INFO("Publishing drop off marker");
     marker_pub.publish(marker);
-    drive_location(-0.8, -5, 1.571);
+    drive_location(-0.8, -5, 1.571, false);
 
     ros::Duration(5.0).sleep();
     return 0;

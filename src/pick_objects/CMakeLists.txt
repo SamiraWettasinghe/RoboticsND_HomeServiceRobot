@@ -55,8 +55,8 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate services in the 'srv' folder
 add_service_files(
-  FILES
-  DriveLocation.srv
+  DIRECTORY srv
+  FILES DriveLocation.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -67,10 +67,10 @@ add_service_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   move_base_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -115,8 +115,8 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
   ${catkin_INCLUDE_DIRS}
+  include
 )
 
 ## Declare a C++ library
@@ -143,7 +143,6 @@ add_executable(pick_objects src/pick_objects.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(pick_objects ${pick_objects_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(add_markers ${add_markers_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(pick_objects

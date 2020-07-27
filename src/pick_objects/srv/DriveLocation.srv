@@ -1,5 +1,6 @@
-float64 x_lox
-float64 y_lox
+float64 x_loc
+float64 y_loc
 float64 w_rot
+bool first
 ---
 string msg_feedback

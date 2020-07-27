@@ -10,6 +10,7 @@ project(add_markers)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   visualization_msgs
+  pick_objects
 )
 
 ## System dependencies are found with CMake's conventions
@@ -103,7 +104,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES add_markers
+ LIBRARIES pick_objects
 #  CATKIN_DEPENDS roscpp visualization_msgs
 #  DEPENDS system_lib
 )
@@ -115,7 +116,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -143,7 +144,6 @@ add_executable(add_markers src/add_markers.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(add_markers ${add_markers_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(pick_objects ${pick_objects_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(add_markers
