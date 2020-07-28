@@ -104,7 +104,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
- LIBRARIES pick_objects
+#  LIBRARIES pick_objects
 #  CATKIN_DEPENDS roscpp visualization_msgs
 #  DEPENDS system_lib
 )
@@ -143,7 +143,7 @@ add_executable(add_markers src/add_markers.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(add_markers ${add_markers_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(add_markers ${add_markers_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(add_markers

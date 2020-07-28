@@ -6,16 +6,16 @@
 
 // Set up client to request to drive to new location
 ros::ServiceClient client;
-void drive_location(float x, float y, float w, bool first)
+
+void drive_location(float x, float y, float w)
 {
-  add_markers::DriveLocation srv;
+  pick_objects::DriveLocation srv;
   srv.request.x_loc = x;
   srv.request.y_loc = y;
   srv.request.w_rot = w;
-  srv.request.first = first;
 
   if (!client.call(srv)) {
-    ROS_ERROR("Failed to call service")
+    ROS_ERROR("Failed to call service");
   }
 }
 
@@ -26,7 +26,7 @@ int main( int argc, char** argv )
   ros::NodeHandle n;
   ros::Rate r(1);
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
-  client = n.ServiceClient<add_markers::DriveLocation>("/add_markers/new_location");
+  client = n.serviceClient<pick_objects::DriveLocation>("/pick_objects/new_location");
 
   uint32_t shape = visualization_msgs::Marker::CUBE;
 
@@ -71,22 +71,24 @@ int main( int argc, char** argv )
       ROS_WARN_ONCE("Please create a subscriber to the marker");
       sleep(1);
     }
-
-    drive_location(-6.6, 2.0, 1.571, true);
     marker_pub.publish(marker);
+    drive_location(-6.6, 2.0, 1.571);
     ros::spinOnce();
 
     marker.action = visualization_msgs::Marker::DELETE;
 	  marker_pub.publish(marker);
-    ROS_INFO("Marker deleted");
+    ros::Duration(5.0).sleep();
+    ROS_INFO("Robot has successfully picked up the object");
 
-    ros::Duration(1.0).sleep();
+    
+    ros::spinOnce();
+    marker.action = visualization_msgs::Marker::ADD;
+    drive_location(-0.8, -5, 1.571);
+    
     marker.pose.position.x = -0.8;
     marker.pose.position.y = -5;
-    marker.action = visualization_msgs::Marker::ADD;
-    ROS_INFO("Publishing drop off marker");
     marker_pub.publish(marker);
-    drive_location(-0.8, -5, 1.571, false);
+    ROS_INFO("Robot has successfully delivered the object");
 
     ros::Duration(5.0).sleep();
     return 0;
