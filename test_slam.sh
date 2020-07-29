@@ -6,4 +6,4 @@ xterm -e "roslaunch turtlebot_gazebo gmapping_demo.launch" &
 sleep 5
 xterm -e "roslaunch turtlebot_rviz_launchers view_navigation.launch" &
 sleep 5
-xterm -e "rosrun teleop_twist_keyboard teleop_twist_keyboard.py"
+xterm -e "roslaunch turtlebot_teleop keyboard_teleop.launch"
