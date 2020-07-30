@@ -1,6 +1,6 @@
 # RoboticsND_HomeServiceRobot
 ## Home Service Robot
-A home service robot is a robot which will pick up and drop off an object per request. This ROS project simulates a TurtleBot picking up a virtual object and dropping off the virtual object in a specified drop off location.
+A home service robot is a robot which will pick up and drop off an object per request. This ROS project simulates a TurtleBot picking up a virtual object and dropping off the virtual object in a specified drop off location. The simulation environment is Gazebo.
 ## Mapping
 Initially [gmapping](http://wiki.ros.org/gmapping) was used to attempt to make a map of the Gazebo environment however [pgm_map_creator](https://github.com/hyfan1116/pgm_map_creator) was chosen since gmapping yielded poor results. Gmapping is a laser based SLAM method typicaly yielding good data in practice. However, the Turtlebot LiDAR has a very small field of view and insufficient range such that SLAM took on the order of hours to generate a marginally sufficient map. Therefore, since pgm_map_creator will directly generate a ground truth map from Gazebo, the project was simplified. This map can be found below. Future work can be done to implement a Hokuyo 3D LiDAR in a custom robot. Or an RGB-D camera could be used in conjunction with a Hokuyo LiDAR to use [RTAB-Map](http://wiki.ros.org/rtabmap) algorithm for mapping.
 
@@ -14,4 +14,12 @@ Given pick up location coordinates and pose, the task of path planning is to gen
 ## Full Simulation
 To simulate the robot picking up objects and dropping off objects, [visualization_msgs/Marker](http://wiki.ros.org/rviz/Tutorials/Markers%3A%20Basic%20Shapes) messages was used to send a blue square visualization to the pick up and drop off location. Once Turtlebot has navigated to the pick up location, the robot will wait 5 seconds to simulate the process of picking up an object. After this process is completed, Turtlebot will travel to the drop off location and once reached, a blue square will appear to simulate that the robot has successfully dropped off the object.
 
-This process is done through the add_markers node and the pick_objects node. A service is defined in the pick_objects node which will take in a location for the navigation stack. The client is add_markers which will display blue squares and provide locations for Turtlebot to travel to.
+This process is done through the `add_markers` node and the `pick_objects` node. A service is defined in the `pick_objects` node which will take in a location for the navigation stack. The client is `add_markers` which will display blue squares and provide locations for Turtlebot to travel to.
+
+To execute the process, simply run:
+```
+./home_service.sh
+```
+After this shell script has executed and launched the necessary nodes, the simulation should begin in RViz and Gazebo similar to below.
+
+![robot](/images/robot.gif)
